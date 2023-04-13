@@ -1,19 +1,24 @@
 package com.mycart.estore.ProductService.command.interceptor;
 
 import com.mycart.estore.ProductService.command.CreateProductCommand;
+import com.mycart.estore.ProductService.core.data.ProductLookUpEntity;
+import com.mycart.estore.ProductService.core.repository.ProductLookUpRepository;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.axonframework.commandhandling.CommandMessage;
 import org.axonframework.messaging.MessageDispatchInterceptor;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.Nonnull;
-import java.math.BigDecimal;
 import java.util.List;
 import java.util.function.BiFunction;
 
 @Component
 @Slf4j
+@RequiredArgsConstructor
 public class CreateProductCommandInterceptor implements MessageDispatchInterceptor<CommandMessage<?>> {
+
+    private final ProductLookUpRepository productLookUpRepository;
     @Nonnull
     @Override
     public BiFunction<Integer, CommandMessage<?>, CommandMessage<?>> handle(@Nonnull List<? extends CommandMessage<?>> list) {
@@ -25,14 +30,14 @@ public class CreateProductCommandInterceptor implements MessageDispatchIntercept
             {
                 CreateProductCommand createProductCommand = (CreateProductCommand) command.getPayload();
 
-                if(createProductCommand.getPrice().compareTo(BigDecimal.ZERO) <= 0)
-                {
-                    throw new IllegalArgumentException("Price can not be less then ot equals to zero");
-                }
+                ProductLookUpEntity productLookUpEntity = productLookUpRepository.findByProductIdOrTitle(createProductCommand.getProductId(), createProductCommand.getTitle());
 
-                if(createProductCommand.getTitle().isBlank() || createProductCommand.getTitle() == null)
+                if(productLookUpEntity != null)
                 {
-                    throw new IllegalArgumentException("title can not be empty");
+                    throw new IllegalStateException(
+                            String.format("Product with %s id and %s title already exists",
+                                    createProductCommand.getProductId(),createProductCommand.getTitle()));
+
                 }
             }
             return command;

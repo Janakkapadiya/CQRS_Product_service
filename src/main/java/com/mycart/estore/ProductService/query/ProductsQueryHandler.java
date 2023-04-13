@@ -14,6 +14,7 @@ import java.util.List;
 @Component
 @RequiredArgsConstructor
 public class ProductsQueryHandler {
+
     private final ProductRepository productRepository;
     @QueryHandler
     public List<QueryProductRest> getProducts(FindProductsQuery query){

@@ -1,6 +1,7 @@
 package com.mycart.estore.ProductService.command;
 
 import com.mycart.estore.ProductService.core.events.ProductCreatedEvent;
+import lombok.NoArgsConstructor;
 import org.axonframework.commandhandling.CommandHandler;
 import org.axonframework.eventsourcing.EventSourcingHandler;
 import org.axonframework.modelling.command.AggregateIdentifier;
@@ -11,6 +12,7 @@ import org.springframework.beans.BeanUtils;
 import java.math.BigDecimal;
 
 @Aggregate
+@NoArgsConstructor
 public class ProductAggregate {
 
     @AggregateIdentifier
@@ -19,11 +21,9 @@ public class ProductAggregate {
     private BigDecimal price;
     private Integer quantity;
 
-    public ProductAggregate() {
-    }
-
     @CommandHandler
     public ProductAggregate(CreateProductCommand createProductCommand) {
+
         // validate CreateProduct command
         if(createProductCommand.getPrice().compareTo(BigDecimal.ZERO) <= 0)
         {

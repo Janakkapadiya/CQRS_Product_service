@@ -1,7 +1,9 @@
 package com.mycart.estore.ProductService;
 
 import com.mycart.estore.ProductService.command.interceptor.CreateProductCommandInterceptor;
+import com.mycart.estore.ProductService.error.ProductServiceEventErrorHandler;
 import org.axonframework.commandhandling.CommandBus;
+import org.axonframework.config.EventProcessingConfigurer;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -21,4 +23,9 @@ public class ProductServiceApplication {
         commandBus.registerDispatchInterceptor(context.getBean(CreateProductCommandInterceptor.class));
     }
 
+    @Autowired
+    public void configure(EventProcessingConfigurer config) {
+        config.registerListenerInvocationErrorHandler("product-group",
+                c -> new ProductServiceEventErrorHandler());
+    }
 }
