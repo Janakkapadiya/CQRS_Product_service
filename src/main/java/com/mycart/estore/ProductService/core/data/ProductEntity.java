@@ -15,6 +15,7 @@ import java.math.BigDecimal;
 @Setter
 @RequiredArgsConstructor
 public class ProductEntity implements Serializable {
+
   public static final long serialVersionUID = -1275453453766313659L;
 
   @Id
