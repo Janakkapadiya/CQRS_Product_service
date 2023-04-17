@@ -6,6 +6,7 @@ import com.mycart.estore.ProductService.core.repository.ProductLookUpRepository;
 import lombok.RequiredArgsConstructor;
 import org.axonframework.config.ProcessingGroup;
 import org.axonframework.eventhandling.EventHandler;
+import org.axonframework.eventhandling.ResetHandler;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -20,5 +21,10 @@ public class ProductLookUpEventsHandler {
                 .productId(event.getProductId())
                 .title(event.getTitle()).build();
         productLookUpRepository.save(productLookUpEntity);
+    }
+
+    @ResetHandler
+    public void reset() {
+        productLookUpRepository.deleteAll();
     }
 }

@@ -30,3 +30,10 @@ axon:
     processors:
       product-lookup:
         mode: subscribing
+
+# product-lookup in axon is a processorName  and while we do events reply we have to change subscribing to tracking
+#axon:
+#  eventhandling:
+#    processors:
+#      product-lookup:
+#        mode: tracking

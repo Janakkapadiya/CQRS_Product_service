@@ -1,7 +1,9 @@
 package com.mycart.estore.ProductService.command;
 
 import com.mycart.estore.ProductService.core.events.ProductCreatedEvent;
+import com.mycart.estore.core.commands.CancelReservedProductCommand;
 import com.mycart.estore.core.commands.ReserveProductCommand;
+import com.mycart.estore.core.events.ProductReservationCancelledEvent;
 import com.mycart.estore.core.events.ProductReservedEvent;
 import lombok.NoArgsConstructor;
 import org.axonframework.commandhandling.CommandHandler;
@@ -55,6 +57,24 @@ public class ProductAggregate {
                 .build();
 
         AggregateLifecycle.apply(productReservedEvent);
+    }
+
+    @CommandHandler
+    public void handle(CancelReservedProductCommand cancelReservedProductCommand){
+        ProductReservationCancelledEvent productReservationCancelledEvent =
+                ProductReservationCancelledEvent.builder()
+                        .productId(cancelReservedProductCommand.getProductId())
+                        .userId(cancelReservedProductCommand.getUserId())
+                        .quantity(cancelReservedProductCommand.getQuantity())
+                        .orderId(cancelReservedProductCommand.getOrderId())
+                        .reason(cancelReservedProductCommand.getReason())
+                        .build();
+
+        AggregateLifecycle.apply(productReservationCancelledEvent);
+    }
+    @EventSourcingHandler
+    public void on(ProductReservationCancelledEvent cancelReservedProductCommand){
+        this.quantity += cancelReservedProductCommand.getQuantity();
     }
 
     @EventSourcingHandler
